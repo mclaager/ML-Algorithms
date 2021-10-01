@@ -24,3 +24,12 @@ def tanh(x: np.ndarray) -> np.ndarray:
 
 def tanh_der(x: np.ndarray) -> np.ndarray:
     return 1 - np.tanh(x) ** 2
+
+def relu(x: np.ndarray) -> np.ndarray:
+    return np.maximum(x,0)
+
+def relu_der(x: np.ndarray) -> np.ndarray:
+    output = x
+    output[output <= 0] = 0
+    output[output > 0] = 1
+    return output
