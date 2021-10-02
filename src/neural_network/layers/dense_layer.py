@@ -1,6 +1,6 @@
 import numpy as np
 from neural_network.layers.layer import Layer
-import neural_network.layers.init_methods as init_methods
+import ml_functions.init_methods as init_methods
 
 from ml_functions.helper_functions import str_or_func
 
