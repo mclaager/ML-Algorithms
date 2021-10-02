@@ -4,22 +4,44 @@ from neural_network.layers.layer import Layer
 from neural_network.layers.activation_layer import ActivationLayer
 
 import ml_functions.cost_functions as cost_functions
-from ml_functions.metrics import binary_accuracy
+import ml_functions.metrics as metrics
+
+from ml_functions.helper_functions import str_or_func
 
 
 class NeuralNetwork():
-    def __init__(self, *args: Layer) -> None:
-        # Checks that there is at least 2 layers given as input
-        assert len(args) >= 2, "Neural Network requires at least 2 layers as input."
+    def __init__(self, layers: list, cost_function: str or function = 'mse',\
+        cost_function_der: str or function = 'mse_der', metric: str or function = 'binary_accuracy') -> None:
+        
+        self.layers = layers
 
-        self.layers = list(args)
+        cf_der = cost_function_der
 
-        self.cost_function = cost_functions.mse
-        self.cost_function_der = cost_functions.mse_der
+        # Test if only one input was given for cost function
+        if cf_der is None:
+            if isinstance(cost_function, str):
+                cf_der = cost_function + '_der'
+            else:
+                raise TypeError('Cost function must be string type \
+                    if derivative is not given explicitly.')
 
-        self.metric = binary_accuracy
+        # Set the cost function and its derivative
+        self.cost_function = str_or_func(module=cost_functions, identifier=cost_function,\
+            err_msg="Invalid cost function given.")
+        self.cost_function_der = str_or_func(module=cost_functions, identifier=cf_der,\
+            err_msg="Invalid cost function derivative given.")
+
+        # Set the metric
+        self.metric = str_or_func(module=metrics, identifier=metric,\
+            err_msg="Invalid metric given.")
+        # Sets the name of the metric
+        if isinstance(metric, str):
+            self.metric_name = metric
+        else:
+            self.metric_name = metric.__name__
     
     def add(self, layer: Layer) -> None:
+        """Adds a layer to the network"""
         self.layers.append(layer)
     
     def forward_prop(self, input: np.ndarray) -> np.ndarray:
@@ -79,6 +101,8 @@ class NeuralNetwork():
         :returns: A dictionary of accuracies for training and validation, if applicable
         """
 
+        assert len(self.layers) > 0, "Network is empty."
+
         sample_count = X_train.shape[0]
 
         # Checks that the training data is the same size as the labels
@@ -87,7 +111,7 @@ class NeuralNetwork():
                 ({} and {}, respectively)'.format(sample_count,y_train.shape[0]))
         
         history = {
-            "accuracy" : []
+            self.metric_name : []
         }
         
         # Checks sizes of validation data, if applicable
@@ -100,7 +124,7 @@ class NeuralNetwork():
                 raise IndexError('The validation inputs are not the same size as the labels \
                 ({} and {}, respectively)'.format(val_sample_count,y_val.shape[0]))
             
-            history["val_accuracy"] = []
+            history['val_'+self.metric_name] = []
 
 
         if verbose:
@@ -121,10 +145,10 @@ class NeuralNetwork():
             
             # Gets metrics for history
             metric_output = self.evaluate(X_train, y_train)
-            history["accuracy"].append(metric_output)
+            history[self.metric_name].append(metric_output)
             if validation_data is not None:
                 metric_output = self.evaluate(X_val, y_val)
-                history["val_accuracy"].append(metric_output)
+                history['val_'+self.metric_name].append(metric_output)
             
             # Gets average loss
             loss /= sample_count

@@ -17,18 +17,22 @@ def reraise(e, *args):
   # where this exception originated.
   raise e.with_traceback(e.__traceback__)
 
-def str_or_func(module, identifier):
+def str_or_func(module, identifier, err_msg = ''):
     """
     If string is inputted, the function will be searched for in
     the given module. Otherwise, the function itself will be returned.
 
     :param module: The module that will be searched
     :param identifier: String or Func that will be searched
+    :param err_msg: A custom error message if identifier is not in module
 
     :raise AttributeError: Given string was not found in module
     """
 
     if isinstance(identifier, str):
+      try:
         return getattr(module, identifier)
+      except AttributeError as err:
+        reraise(err, err_msg)
     else:
         return identifier

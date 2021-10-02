@@ -17,19 +17,19 @@ layer2 = DenseLayer(hidden_dims, output_dims)
 layer2_a = ActivationLayer('tanh')
 
 # Create network
-network = NeuralNetwork(
+network = NeuralNetwork([
     layer1,
     layer1_a,
     layer2,
     layer2_a
-)
+])
 
 # training data
 X_train = np.array([[[0,0]], [[0,1]], [[1,0]], [[1,1]]])
 y_train = np.array([[[0]], [[1]], [[1]], [[0]]])
 
 # Fit the network
-network.fit(X=X_train, y=y_train, epochs=1000, lr=0.1)
+network.fit(X_train=X_train, y_train=y_train, epochs=1000, lr=0.1)
 
 # Prove that network was able to fit data well
 yHat = network.predict(np.array([[0,0]]))

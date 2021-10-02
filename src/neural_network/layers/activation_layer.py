@@ -1,6 +1,6 @@
 from neural_network.layers.layer import Layer
 import ml_functions.activation_functions as activation_functions
-from ml_functions.helper_functions import reraise, str_or_func
+from ml_functions.helper_functions import str_or_func
 
 class ActivationLayer(Layer):
     """
@@ -10,8 +10,8 @@ class ActivationLayer(Layer):
     back propagate through chosen function.
     """
 
-    def __init__(self, activation_func: str or function,
-                activation_func_der: str or function = None) -> None:
+    def __init__(self, activation_func: str or function,\
+        activation_func_der: str or function = None) -> None:
         """
         Initailize the activation layer with either custom functions, string
         names of the function and its derivative, or just the string name of
@@ -30,20 +30,16 @@ class ActivationLayer(Layer):
             if isinstance(activation_func, str):
                 af_der = activation_func + '_der'
             else:
-                raise TypeError('Defining activation layer using a single argument \
-                    requires a string name to be used.')
+                raise TypeError('Activation function must be string type \
+                    if derivative is not given explicitly.')
         
         
         # Select existing library activation function or use custom
-        try:
-            self.activation_func = str_or_func(activation_functions, activation_func)
-        except AttributeError as err:
-            reraise(err, '"{}" is not a valid activation function'.format(activation_func))
+        self.activation_func = str_or_func(module=activation_functions, identifier=activation_func,\
+            err_msg="Invalid activation function given.")
         # Select existing library derivative or use custom
-        try:
-            self.activation_func_der = str_or_func(activation_functions, af_der)
-        except AttributeError as err:
-            reraise(err, '"{}" is not a valid derivative to an activation function'.format(af_der))
+        self.activation_func_der = str_or_func(module=activation_functions, identifier=af_der,\
+            err_msg="Invalid activation function derivative given.")
         
         # Set the name of the activation function
         if isinstance(activation_func, str):
