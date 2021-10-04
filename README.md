@@ -5,8 +5,13 @@ This repository contains all of my custom implementations of various different m
 ## Included Algorithms
 
 ### 1. Neural Network
-An implementation of a fully-connected deep neural network that is styled after Keras.
+An implementation of a fully-connected deep neural network that is styled after Keras, using only numpy.
 
 It currently allows for multi-layered networks to be easily created and trained. Features dense layers (fully-connected layers) and activation layers. Has built-in activation functions, weight+bias initialization methods, cost functions, and metrics; however, custom functions are easily able to be put in place of the built-in methods.
 
 Examples can be seen under `neural_network/examples`.
+
+### 2. Linear Regression
+Currently, only the closed form solution is available. However, a gradient descent version is planned.
+
+Implemented only using numpy.
