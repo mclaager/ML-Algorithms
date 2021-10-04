@@ -6,7 +6,7 @@ from neural_network.layers.activation_layer import ActivationLayer
 import ml_functions.cost_functions as cost_functions
 import ml_functions.metrics as metrics
 
-from ml_functions.helper_functions import str_or_func
+from ml_functions.helper_functions import coerce_1d_array, str_or_func
 
 
 class NeuralNetwork():
@@ -50,7 +50,8 @@ class NeuralNetwork():
         for layer in self.layers:
             output = layer.forward_prop(output)
         
-        return output
+        # Flattens the output into a vector
+        return output.flatten()
     
     def backward_prop(self, expected: np.ndarray, output: np.ndarray, lr: float) -> list:
         """
@@ -136,12 +137,15 @@ class NeuralNetwork():
 
             # trains the network on the training data
             for j in range(sample_count):
+                # Coerces 1D arrays into 2D for compatibility
+                x_j = coerce_1d_array(X_train[j], axis=1)
+                y_j = coerce_1d_array(y_train[j], axis=0)
                 # forward propogation, using jth input
-                output = self.forward_prop(X_train[j])
+                output = self.forward_prop(x_j)
                 # Calculates loss
-                loss += self.cost_function(y_train[j], output)
+                loss += self.cost_function(y_j, output)
                 # backward propogation
-                self.backward_prop(y_train[j], output, lr)
+                self.backward_prop(y_j, output, lr)
             
             # Gets metrics for history
             metric_output = self.evaluate(X_train, y_train)
@@ -167,8 +171,13 @@ class NeuralNetwork():
 
         :returns: A value from the metric that was performed on the data
         """
-        prediction = self.predict(X_test)
-        return self.metric(prediction, y_test)
+        # Coerces 1D array into 2D array for compatibility
+        Xt = coerce_1d_array(X_test, axis=1)
+        yt = coerce_1d_array(y_test, axis=0)
+        # Gets network prediction
+        prediction = self.predict(Xt)
+        # Returns the calculated metric score
+        return self.metric(prediction, yt)
 
     def print_network(self) -> None:
         """Prints out a readble version of the network"""

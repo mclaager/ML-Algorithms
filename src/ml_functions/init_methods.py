@@ -9,12 +9,15 @@ All supported weight initialization methods are stored here. The
 functions take the request shape (if required, the layer size as the first), and return
 the initialized weights as numpy arrays.
 """
-def zero(shape: tuple) -> np.ndarray:
+def zeros(shape: tuple) -> np.ndarray:
+    return np.zeros(shape)
+
+def ones(shape: tuple) -> np.ndarray:
     return np.zeros(shape)
 
 def randu(shape: tuple) -> np.ndarray:
     rng = np.random.default_rng()
-    return rng.random_sample(shape)
+    return rng.uniform(shape)
 
 def randn(shape: tuple) -> np.ndarray:
     rng = np.random.default_rng()

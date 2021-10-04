@@ -25,8 +25,8 @@ network = NeuralNetwork([
 ])
 
 # training data
-X_train = np.array([[[0,0]], [[0,1]], [[1,0]], [[1,1]]])
-y_train = np.array([[[0]], [[1]], [[1]], [[0]]])
+X_train = np.vstack(([0,0],[0,1],[1,0],[1,1]))
+y_train = np.array([0,1,1,0]).reshape(-1,1)
 
 # Fit the network
 network.fit(X_train=X_train, y_train=y_train, epochs=1000, lr=0.1)
