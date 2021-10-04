@@ -33,8 +33,8 @@ class DenseLayer(Layer):
         self.biases = self.biases_init_method((1, self.output_size))
 
         # Layer input and pre-activated neuron outputs
-        self.input = np.zeros((1, self.input_size))
-        self.output = np.zeros((1, self.output_size))
+        self.input = init_methods.zeros((1, self.input_size))
+        self.output = init_methods.zeros((1, self.output_size))
 
     def forward_prop(self, input: np.ndarray) -> np.ndarray:
         """Performs forward propagation through the layer"""
