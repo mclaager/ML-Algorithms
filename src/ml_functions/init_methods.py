@@ -13,7 +13,7 @@ def zeros(shape: tuple) -> np.ndarray:
     return np.zeros(shape)
 
 def ones(shape: tuple) -> np.ndarray:
-    return np.zeros(shape)
+    return np.ones(shape)
 
 def randu(shape: tuple) -> np.ndarray:
     rng = np.random.default_rng()
