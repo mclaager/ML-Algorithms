@@ -42,7 +42,7 @@ def str_or_func(module, identifier, err_msg = ''):
         return identifier
 
 
-def coerce_1d_array(arr: np.ndarray, new_dimensions: int = 2, axis: int = 0) -> np.ndarray:
+def coerce_1d_array(arr: np.ndarray or list, new_dimensions: int = 2, axis: int = 0) -> np.ndarray:
     """
     If a 1D numpy array is given, it will returned a coerced nD array with the original values
     along the chosen axis.
@@ -53,8 +53,8 @@ def coerce_1d_array(arr: np.ndarray, new_dimensions: int = 2, axis: int = 0) -> 
 
     :returns: The original array or a nD coersion of that array
     """
-    new_arr = arr
+    new_arr = np.array(arr)
     if len(new_arr.shape) == 1:
         new_axis = [-1 if s == axis else 1 for s in range(new_dimensions)]
-        new_arr = arr.reshape(tuple(new_axis))
+        new_arr = new_arr.reshape(tuple(new_axis))
     return new_arr
