@@ -52,7 +52,7 @@ class LinearRegression():
 
     def predict(self, input):
         # Compatibility
-        x = coerce_1d_array(input, axis=1)
+        x = coerce_1d_array(input, axis=0)
         # Adds bias term
         x_new = [init_methods.ones((x.shape[0],1))] + [x]
         x_new = np.column_stack(x_new)
