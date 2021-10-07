@@ -4,4 +4,4 @@ __pycache__/
 *$py.class
 
 # main file
-src/main.py
+main.py

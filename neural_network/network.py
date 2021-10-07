@@ -3,10 +3,10 @@ import numpy as np
 from neural_network.layers.layer import Layer
 from neural_network.layers.activation_layer import ActivationLayer
 
-import ml_functions.cost_functions as cost_functions
-import ml_functions.metrics as metrics
+import tools.cost_functions as cost_functions
+import tools.metrics as metrics
 
-from ml_functions.helper_functions import coerce_1d_array, str_or_func
+from tools.helper_functions import coerce_1d_array, str_or_func
 
 
 class NeuralNetwork():
