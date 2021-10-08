@@ -1,5 +1,5 @@
 """
-Contains different cost functions & their respective derivatives used for error calculation.
+Contains different loss functions & their respective derivatives used for error calculation.
 Derivatives share the same name as their parent function, plus an '_der'
 """
 

@@ -10,7 +10,7 @@ Dependencies: NumPy
 
 An implementation of a fully-connected deep neural network that is styled after Keras.
 
-It currently allows for multi-layered networks to be easily created and trained. Features dense layers (fully-connected layers) and activation layers. Has built-in activation functions, weight+bias initialization methods, cost functions, and metrics; however, custom functions are easily able to be put in place of the built-in methods. Currently only uses pure SGD (not mini-batch) optimizer.
+It currently allows for multi-layered networks to be easily created and trained. Features dense layers (fully-connected layers) and activation layers. Has built-in activation functions, weight+bias initialization methods, cost functions, optimizers, and metrics; however, custom functions are easily able to be put in place of the built-in methods. The only built-in metric is a binary classification accuracy metric and the only built-in optimizer is SGD. Mini-batch is not yet supported.
 
 Examples can be seen under `neural_network/examples`.
 

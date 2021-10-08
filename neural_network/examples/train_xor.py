@@ -28,6 +28,9 @@ network = NeuralNetwork([
 X_train = np.vstack(([0,0],[0,1],[1,0],[1,1]))
 y_train = np.array([0,1,1,0]).reshape(-1,1)
 
+# Compliles the network (uses sgd optimizer, mse loss function, binary accuracy metric)
+network.compile()
+
 # Fit the network
 network.fit(X_train=X_train, y_train=y_train, epochs=1000, lr=0.1)
 

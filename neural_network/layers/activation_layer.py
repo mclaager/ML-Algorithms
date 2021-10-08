@@ -23,6 +23,7 @@ class ActivationLayer(Layer):
         string or function. Required if first argument was not a string
         """
         super().__init__()
+        self.trainable = False
 
         af_der = activation_func_der
 
@@ -54,7 +55,7 @@ class ActivationLayer(Layer):
         self.input = input
         return self.activation_func(self.input)
     
-    def backward_prop(self, delta, lr):
+    def backward_prop(self, delta):
         """
         Backwards propagation using derivative of the activation function
         

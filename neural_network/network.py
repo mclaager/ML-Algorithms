@@ -1,35 +1,51 @@
 import numpy as np
 
 from neural_network.layers.layer import Layer
-from neural_network.layers.activation_layer import ActivationLayer
 
-import tools.cost_functions as cost_functions
+import tools.loss_functions as loss_functions
+import tools.optimizers as optimizers
 import tools.metrics as metrics
 
 from tools.helper_functions import coerce_1d_array, str_or_func
 
 
 class NeuralNetwork():
-    def __init__(self, layers: list, cost_function: str or function = 'mse',\
-        cost_function_der: str or function = 'mse_der', metric: str or function = 'binary_accuracy') -> None:
-        
+    def __init__(self, layers: list) -> None:
         self.layers = layers
-
-        cf_der = cost_function_der
+        self.optimizer = None
+        self.loss_function = None
+        self.loss_function_der = None
+        self.metric = None
+        self.metric_name = None
+    
+    def add(self, layer: Layer) -> None:
+        """Adds a layer to the network"""
+        self.layers.append(layer)
+    
+    def compile(self, optimizer: str or function = 'sgd', loss: str or function = 'mse',\
+        loss_der: str or function = 'mse_der', metric: str or function = 'binary_accuracy'):
+        """
+        Compiles a model with a given optimizer, loss function (+ derivative), and
+        metric for model evaluation. This must be called before training takes place.
+        """
+        # Gets the optimizer
+        self.optimizer = str_or_func(module=optimizers, identifier=optimizer,\
+            err_msg="Invalid optimizer given.")
 
         # Test if only one input was given for cost function
-        if cf_der is None:
-            if isinstance(cost_function, str):
-                cf_der = cost_function + '_der'
+        lf_der = loss_der
+        if lf_der is None:
+            if isinstance(loss, str):
+                lf_der = loss + '_der'
             else:
-                raise TypeError('Cost function must be string type \
+                raise TypeError('Loss function must be string type \
                     if derivative is not given explicitly.')
 
         # Set the cost function and its derivative
-        self.cost_function = str_or_func(module=cost_functions, identifier=cost_function,\
-            err_msg="Invalid cost function given.")
-        self.cost_function_der = str_or_func(module=cost_functions, identifier=cf_der,\
-            err_msg="Invalid cost function derivative given.")
+        self.loss_function = str_or_func(module=loss_functions, identifier=loss,\
+            err_msg="Invalid loss function given.")
+        self.loss_function_der = str_or_func(module=loss_functions, identifier=lf_der,\
+            err_msg="Invalid loss function derivative given.")
 
         # Set the metric
         self.metric = str_or_func(module=metrics, identifier=metric,\
@@ -39,10 +55,7 @@ class NeuralNetwork():
             self.metric_name = metric
         else:
             self.metric_name = metric.__name__
-    
-    def add(self, layer: Layer) -> None:
-        """Adds a layer to the network"""
-        self.layers.append(layer)
+
     
     def forward_prop(self, input: np.ndarray) -> np.ndarray:
         """Completes a forward pass of the network on the input 'inpt'"""
@@ -53,18 +66,24 @@ class NeuralNetwork():
         # Flattens the output into a vector
         return output.flatten()
     
-    def backward_prop(self, expected: np.ndarray, output: np.ndarray, lr: float) -> list:
+    def backward_prop(self, expected: np.ndarray, output: np.ndarray) -> list:
         """
         Completes a backward pass (backpropagation) using the true output 'expected'
         and previosuly attained network output 'output'. In most cases, to get the
         expected result, forward_prop() must be called directly before to properly set
         inputs for each layer.
         """
-        error = self.cost_function_der(expected, output)
+        error = self.loss_function_der(expected, output)
         for layer in reversed(self.layers):
-            error = layer.backward_prop(error, lr)
-        
-        return error
+            error = layer.backward_prop(error)
+    
+    def update_params(self, lr: float, epoch: int, time_step: int):
+        """
+        Will update all the trainable layers in the network according to the optimizer.
+        """
+        for layer in self.layers:
+            if layer.is_trainable():
+                self.optimizer(layer, lr, epoch, time_step)
     
     def predict(self, input_data: np.ndarray) -> np.ndarray:
         """
@@ -104,6 +123,7 @@ class NeuralNetwork():
 
         assert len(self.layers) > 0, "Network is empty."
 
+        # Gets amount of training samples
         sample_count = X_train.shape[0]
 
         # Checks that the training data is the same size as the labels
@@ -127,11 +147,11 @@ class NeuralNetwork():
             
             history['val_'+self.metric_name] = []
 
-
         if verbose:
             print('Training Network on {} sample{} for {} epoch{}...\
                 '.format(sample_count, '' if sample_count == 1 else 's', epochs, '' if epochs == 1 else 's'))
 
+        # Begins training
         for i in range(epochs):
             loss = 0
 
@@ -143,9 +163,11 @@ class NeuralNetwork():
                 # forward propogation, using jth input
                 output = self.forward_prop(x_j)
                 # Calculates loss
-                loss += self.cost_function(y_j, output)
+                loss += self.loss_function(y_j, output)
                 # backward propogation
-                self.backward_prop(y_j, output, lr)
+                self.backward_prop(y_j, output)
+                # Updates parameters
+                self.update_params(lr=lr, epoch=i, time_step=j)
             
             # Gets metrics for history
             metric_output = self.evaluate(X_train, y_train)

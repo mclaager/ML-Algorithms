@@ -1,17 +1,17 @@
 import numpy as np
 
-import tools.cost_functions as cost_functions
+import tools.loss_functions as loss_functions
 import tools.init_methods as init_methods
 from tools.helper_functions import coerce_1d_array, str_or_func
 
 class LinearRegression():
     def __init__(self, weight_init_method: str or function = 'randu',\
-        bias_init_method: str or function = 'randu', cost_function: str or function = 'mse') -> None:
+        bias_init_method: str or function = 'randu', loss_function: str or function = 'mse') -> None:
         self.weight_init_method = str_or_func(weight_init_method, init_methods,\
             'Invalid weight initialization function given.')
         self.bias_init_method = str_or_func(bias_init_method, init_methods,\
             'Invalid bias initialization function given.')
-        self.loss_function = str_or_func(cost_function, cost_functions,\
+        self.loss_function = str_or_func(loss_function, loss_functions,\
             'Invalid loss function given.')
         self.beta = None
         pass

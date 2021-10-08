@@ -20,6 +20,7 @@ class DenseLayer(Layer):
         :param biases_init_method: The method used for bias initialization
         """
         super().__init__()
+        self.trainable = True
 
         self.input_size = input_size
         self.output_size = output_size
@@ -47,21 +48,14 @@ class DenseLayer(Layer):
         # Returns pre-activated neurons
         return self.output
     
-    def backward_prop(self, delta: np.ndarray, lr: float) -> np.ndarray:
+    def backward_prop(self, delta: np.ndarray) -> np.ndarray:
         """Performs a backward pass through the layer using aggregated errors from future layers 'delta'"""
-        # Calculate the error of the weights and alter the weights accordingly
-        d_weights = self.input.T @ delta
-        self.weights -= lr * d_weights
-
-        # The error of the bias terms is equivalent to the error of the output
-        self.biases -= lr * delta
+        # Error for the weights and biases are the partial der. for each respecting term mul. by delta
+        self.deltas['weights'] = self.input.T @ delta
+        self.deltas['biases'] = delta
 
         # Return the change in error w.r.t. the input (delta for previous layer)
         return delta @ self.weights.T
-    
-    def get_weights_error(self, delta: np.ndarray) -> np.ndarray:
-        """Gets the weights error using output error"""
-        return self.input.T @ delta
     
     def get_weights(self) -> np.ndarray:
         """Returns the weights of the layer"""

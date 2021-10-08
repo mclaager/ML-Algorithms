@@ -1,8 +1,8 @@
 class Layer():
     """
     A neural network can be divided into separate layers, where each layer
-    must be able to forward and back propogate data. In each case,
-    an input stream is required, back prop may require learning rate
+    must be able to forward and back propogate data. Every layer has an
+    input and output.
     """
     def __init__(self) -> None:
         # The size of the input and output tensors
@@ -13,11 +13,19 @@ class Layer():
         self.input = None
         self.output = None
 
+        # Errors for any trainable parameters of the layer (if applicable)
+        # NOTE: the names for the keys should match the name of the class variable to be updated
+        self.deltas = {}
+
+        # Whether or not the layer has trainable parameters
+        self.trainable = False
+
+
     def forward_prop(self, input):
         """Forward propagation through the layer"""
         raise NotImplementedError
     
-    def backward_prop(self, delta, lr):
+    def backward_prop(self, delta):
         """Back propagation through the layer"""
         raise NotImplementedError
     
@@ -36,6 +44,14 @@ class Layer():
     def get_output(self):
         """Returns the output for the layer"""
         return self.output
+    
+    def get_deltas(self):
+        """Returns the output for the layer"""
+        return self.deltas
+    
+    def is_trainable(self):
+        """Returns whether the layer has trainable parameters"""
+        return self.trainable
     
     def __repr__(self) -> str:
         """How the Layer is represented (all components to recreate the Layer)"""
