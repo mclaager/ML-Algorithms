@@ -22,6 +22,7 @@ class ActivationLayer(Layer):
         :param activation_func_der: Defines the derivative of the activation function. Either a
         string or function. Required if first argument was not a string
         """
+        super().__init__()
 
         af_der = activation_func_der
 
@@ -61,3 +62,6 @@ class ActivationLayer(Layer):
         :param lr: Learning rate, unused as this is a non-learnable layer
         """
         return delta * self.activation_func_der(self.input)
+    
+    def __repr__(self) -> str:
+        return 'Layer activation: {}'.format(self.activation_name)

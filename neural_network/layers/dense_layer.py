@@ -19,6 +19,8 @@ class DenseLayer(Layer):
         :param weights_init_method: The method used for weight initialization
         :param biases_init_method: The method used for bias initialization
         """
+        super().__init__()
+
         self.input_size = input_size
         self.output_size = output_size
 
@@ -61,18 +63,6 @@ class DenseLayer(Layer):
         """Gets the weights error using output error"""
         return self.input.T @ delta
     
-    def get_size(self) -> int:
-        """Returns the size of the layer"""
-        return self.output_size
-    
-    def get_shape(self) -> tuple:
-        """Returns the shape of the layer"""
-        return (self.output_size,1)
-    
-    def get_input_size(self) -> int:
-        """Returns the size of the input to the layer"""
-        return self.input_size
-    
     def get_weights(self) -> np.ndarray:
         """Returns the weights of the layer"""
         return self.weights
@@ -81,10 +71,10 @@ class DenseLayer(Layer):
         """Returns the biases of the layer"""
         return self.biases
     
-    def get_outputs(self) -> np.ndarray:
-        """Returns the neuron outputs for the layer"""
-        return self.output
-    
-    def get_pre_activations(self) -> np.ndarray:
-        """An alias for "get_outputs()". Returns the neuron outputs for the layer"""
-        return self.get_outputs()
+    def __repr__(self) -> str:
+        rtn_str = super().__repr__()
+        f_weights = '  ' + str(self.get_weights()).replace('\n', '\n  ')
+        rtn_str += 'Layer weights:\n{}\n'.format(f_weights)
+        f_biases = '  ' + str(self.get_biases()).replace('\n', '\n  ')
+        rtn_str += 'Layer biases:\n{}'.format(f_biases)
+        return rtn_str

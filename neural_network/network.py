@@ -188,31 +188,10 @@ class NeuralNetwork():
         if len(self.layers) == 0:
             print('Empty Network\n')
             return
-
-        print('Layer 0 (Input Layer):')
-        print('---------------------')
-        print('  input size: {}\n'.format(self.layers[0].get_input_size()))
         
-        l_count = 1
         for l in range(len(self.layers)):
             layer = self.layers[l]
-            # Activation layers already taken care of in previous layer
-            if isinstance(layer, ActivationLayer):
-                continue
-
-            print('Layer {}:'.format(l_count))
+            print('Layer {}:'.format(l+1))
             print('---------')
-            
-            print('  layer size: {}'.format(layer.get_size()))
-            # Prints the activation function of next layer for current layer (if applicable)
-            if not l == len(self.layers)-1:
-                next_layer = self.layers[l+1]
-                if isinstance(next_layer, ActivationLayer):
-                    print('  layer activation function: {}'.format(next_layer.activation_name))
-            # Prints weights and biases of current layer
-            f_weights = '    ' + str(layer.get_weights()).replace('\n', '\n    ')
-            print('  layer weights:\n{}'.format(f_weights))
-            f_biases = '    ' + str(layer.get_biases()).replace('\n', '\n    ')
-            print('  layer biases:\n{}\n'.format(f_biases))
-            
-            l_count += 1
+
+            print('  ' + str(layer).replace('\n', '\n  ') + '\n')
