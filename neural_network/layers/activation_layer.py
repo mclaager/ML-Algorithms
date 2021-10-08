@@ -1,6 +1,7 @@
 from neural_network.layers.layer import Layer
-import tools.activation_functions as activation_functions
-from tools.helper_functions import str_or_func
+
+import utils.activation_functions as activation_functions
+from utils.helper_functions import str_or_func
 
 class ActivationLayer(Layer):
     """

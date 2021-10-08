@@ -1,8 +1,8 @@
 import numpy as np
 
-import tools.loss_functions as loss_functions
-import tools.init_methods as init_methods
-from tools.helper_functions import coerce_1d_array, str_or_func
+import utils.loss_functions as loss_functions
+import utils.init_methods as init_methods
+from utils.helper_functions import coerce_1d_array, str_or_func
 
 class LinearRegression():
     def __init__(self, weight_init_method: str or function = 'randu',\

@@ -1,7 +1,7 @@
 # The optimizer structure is based off the following code: https://github.com/timvvvht/Neural-Networks-and-Optimizers-from-scratch
 
 from neural_network.layers.layer import Layer
-from tools.helper_functions import reraise
+from utils.helper_functions import reraise
 
 """
 An optimizer takes trainable layers throughout the training process

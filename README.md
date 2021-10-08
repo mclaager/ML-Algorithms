@@ -25,7 +25,7 @@ Implements the closed-form solution for performing linear regression. Also shows
 
 The following are considerations for algorithms that may be implemented here. Some of these algorithms exist in my other existing repositories, but I still need to standarize them or add additional functionality to make them more generalized. None are guaranteed to be added.
 
-* Different Optimizers for all ML algorithms, which will be available as a collection within `tools/`
+* Different Optimizers for all ML algorithms, which will be available as a collection within `utils/`
 * Logistic regression
 * Optimizer-based linear regression
 * Statistic analysis functions for models ($r^2$ score, AIC, BIC, etc.)

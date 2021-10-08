@@ -2,11 +2,11 @@ import numpy as np
 
 from neural_network.layers.layer import Layer
 
-import tools.loss_functions as loss_functions
-import tools.optimizers as optimizers
-import tools.metrics as metrics
+import utils.loss_functions as loss_functions
+import utils.optimizers as optimizers
+import utils.metrics as metrics
 
-from tools.helper_functions import coerce_1d_array, str_or_func
+from utils.helper_functions import coerce_1d_array, str_or_func
 
 
 class NeuralNetwork():

@@ -2,8 +2,8 @@ import numpy as np
 
 from linear_regression.linear_regression import LinearRegression
 
-from tools.helper_functions import coerce_1d_array
-from tools.init_methods import randn
+from utils.helper_functions import coerce_1d_array
+from utils.init_methods import randn
 
 class linear_function():
     """A class that implements linear functions"""

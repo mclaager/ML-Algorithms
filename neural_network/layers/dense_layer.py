@@ -1,8 +1,9 @@
 import numpy as np
-from neural_network.layers.layer import Layer
-import tools.init_methods as init_methods
 
-from tools.helper_functions import str_or_func
+from neural_network.layers.layer import Layer
+
+import utils.init_methods as init_methods
+from utils.helper_functions import str_or_func
 
 class DenseLayer(Layer):
     """
