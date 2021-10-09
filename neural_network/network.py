@@ -6,7 +6,7 @@ import utils.loss_functions as loss_functions
 import utils.optimizers as optimizers
 import utils.metrics as metrics
 
-from utils.helper_functions import coerce_1d_array, str_or_func
+from utils.helper_functions import coerce_1d_array, str_or_class, str_or_func
 
 
 class NeuralNetwork():
@@ -22,14 +22,14 @@ class NeuralNetwork():
         """Adds a layer to the network"""
         self.layers.append(layer)
     
-    def compile(self, optimizer: str or function = 'sgd', loss: str or function = 'mse',\
+    def compile(self, optimizer: str or function = 'SGD', loss: str or function = 'mse',\
         loss_der: str or function = 'mse_der', metric: str or function = 'binary_accuracy'):
         """
         Compiles a model with a given optimizer, loss function (+ derivative), and
         metric for model evaluation. This must be called before training takes place.
         """
-        # Gets the optimizer
-        self.optimizer = str_or_func(module=optimizers, identifier=optimizer,\
+        # Gets an instance of the optimizer
+        self.optimizer = str_or_class(module=optimizers, identifier=optimizer,\
             err_msg="Invalid optimizer given.")
 
         # Test if only one input was given for cost function
@@ -77,32 +77,13 @@ class NeuralNetwork():
         for layer in reversed(self.layers):
             error = layer.backward_prop(error)
     
-    def update_params(self, lr: float, epoch: int, time_step: int):
+    def update_params(self, epoch: int, time_step: int):
         """
         Will update all the trainable layers in the network according to the optimizer.
         """
         for layer in self.layers:
             if layer.is_trainable():
-                self.optimizer(layer, lr, epoch, time_step)
-    
-    def predict(self, input_data: np.ndarray) -> np.ndarray:
-        """
-        Uses the neural network to predict on an array of inputs.
-        
-        :param input_data: A numpy array where the first dimension holds
-        each input, i.e. performing input_data.shape[0] should give the amount of inputs
-        """
-        # Amount of samples
-        sample_count = input_data.shape[0]
-
-        result = []
-
-        for i in range(sample_count):
-            # forward propogate 
-            output = self.forward_prop(input_data[i])
-            result.append(output)
-        
-        return np.array(result)
+                self.optimizer.optimize(layer, epoch, time_step)
 
     def fit(self, X_train, y_train, epochs, lr, validation_data = None, verbose: bool = True) -> dict:
         """
@@ -122,6 +103,9 @@ class NeuralNetwork():
         """
 
         assert len(self.layers) > 0, "Network is empty."
+
+        # Sets the learning rate for the optimizer
+        self.optimizer.set_lr(lr)
 
         # Gets amount of training samples
         sample_count = X_train.shape[0]
@@ -167,7 +151,7 @@ class NeuralNetwork():
                 # backward propogation
                 self.backward_prop(y_j, output)
                 # Updates parameters
-                self.update_params(lr=lr, epoch=i, time_step=j)
+                self.update_params(epoch=i, time_step=j)
             
             # Gets metrics for history
             metric_output = self.evaluate(X_train, y_train)
@@ -182,7 +166,25 @@ class NeuralNetwork():
                 print('Epoch {}/{}:  loss = {}'.format(i+1,epochs,loss))
         
         return history
+    
+    def predict(self, input_data: np.ndarray) -> np.ndarray:
+        """
+        Uses the neural network to predict on an array of inputs.
+        
+        :param input_data: A numpy array where the first dimension holds
+        each input, i.e. performing input_data.shape[0] should give the amount of inputs
+        """
+        # Amount of samples
+        sample_count = input_data.shape[0]
 
+        result = []
+
+        for i in range(sample_count):
+            # forward propogate 
+            output = self.forward_prop(input_data[i])
+            result.append(output)
+        
+        return np.array(result)
     
     def evaluate(self, X_test: np.ndarray, y_test: np.ndarray) -> float:
         """

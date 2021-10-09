@@ -41,6 +41,27 @@ def str_or_func(module, identifier, err_msg = ''):
     else:
         return identifier
 
+def str_or_class(module, identifier, err_msg = '', **kwargs):
+    """
+    If string is inputted, the class will be searched for in
+    the given module and a no-param instance returned.
+    Otherwise, the instance itself will be returned.
+
+    :param module: The module that will be searched
+    :param identifier: String or Class that will be searched 
+    :param err_msg: A custom error message if identifier is not in module
+    :param **kwargs: A list of agruments to instantiate class with
+
+    :raise AttributeError: Given string was not found in module
+    """
+
+    if isinstance(identifier, str):
+      try:
+        return getattr(module, identifier)(**kwargs)
+      except AttributeError as err:
+        reraise(err, err_msg)
+    else:
+        return identifier
 
 def coerce_1d_array(arr: np.ndarray or list, new_dimensions: int = 2, axis: int = 0) -> np.ndarray:
     """
