@@ -18,7 +18,7 @@ Examples can be seen under `neural_network/examples`.
 
 Dependencies: NumPy
 
-Implements the closed-form solution for performing linear regression. Also shows how **Polynomial Regression** can be implemented as an expansion of linear regression under `linear_regression/examples/polynomial_regression.ipynb`.
+Implements the closed-form solution for performing linear regression, as well as mini-batch, optimizer-based linear regression. Also shows how **Polynomial Regression** can be implemented as an expansion of linear regression under `linear_regression/examples/polynomial_regression.ipynb`.
 
 
 ## Planned Additions
@@ -27,8 +27,8 @@ The following are considerations for algorithms that may be implemented here. So
 
 * Different Optimizers for all ML algorithms, which will be available as a collection within `utils/`
 * Logistic regression
-* Optimizer-based linear regression
-* Statistic analysis functions for models ($r^2$ score, AIC, BIC, etc.)
+* Optimizer-based linear regression :heavy_check_mark:
+* Statistic analysis functions for models (r<sup>2</sup> score, AIC, BIC, etc.)
 * Convolution Neural Netorks
 * Support Vector Machines
 * Random Forest

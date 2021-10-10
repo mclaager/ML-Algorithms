@@ -56,22 +56,43 @@ x_n = [2 * randn((m,1)) for i in range(len(WEIGHT_TERMS))]
 X_train = np.column_stack(x_n)
 y_train = func(X_train) + randn((m,))
 
+
 # Performs closed form linear regression
-model = LinearRegression()
-model.fit_closed(X_train, y_train)
+closed_model = LinearRegression()
+closed_model.fit_closed(X_train, y_train)
 
 # Prints least squares prediction
 closed_form_str = 'Closed-Form Linear Regression (Least-Squares) Prediction:\n\
-    y = {0:.3f}'.format(model.get_bias())
-closed_form_weights = model.get_weights()
+    y = {0:.3f}'.format(closed_model.get_bias())
+closed_form_weights = closed_model.get_weights()
 for i in range(closed_form_weights.shape[0]):
     closed_form_str += ' + {0:.3f}*(x{1})'.format(closed_form_weights[i],i+1)
 print(closed_form_str)
 
+
+# Performs mini-batch SGD linear regression
+epochs = 100
+lr = 0.01
+batch_size = 4
+sgd_model = LinearRegression(optimizer='SGD')
+sgd_model.fit(X_train, y_train, epochs=epochs, lr=lr, batch_size=batch_size)
+
+# Prints SGD prediction
+sgd_str = 'Mini-batch Gradient Descent Prediction (epochs={0}, learning rate={1}, batch size={2}):\n\
+    y = {3:.3f}'.format(epochs, lr, batch_size, sgd_model.get_bias())
+sgd_weights = sgd_model.get_weights()
+for i in range(sgd_weights.shape[0]):
+    sgd_str += ' + {0:.3f}*(x{1})'.format(sgd_weights[i],i+1)
+print(sgd_str)
+
+
 # Prints original function output on a set of weights [1, 2, .., n]
-one_arr = [i+1 for i in range(len(WEIGHT_TERMS))]
+one_arr = [[i+1 for i in range(len(WEIGHT_TERMS))]]
 print('\nOriginal function output on input [1, 2, ..., n-1, n]:\n\
     {}'.format(func(one_arr)))
-# Prints prediction of linear regression on same set of weights
+# Prints closed form prediction on same set of weights
 print('Least squares prediction on input [1, 2, ..., n-1, n]:\n\
-    {}'.format(model.predict(one_arr)))
+    {}'.format(closed_model.predict(one_arr)))
+# Prints SGD prediction on same set of weights
+print('SGD prediction on input [1, 2, ..., n-1, n]:\n\
+    {}'.format(sgd_model.predict(one_arr)))
