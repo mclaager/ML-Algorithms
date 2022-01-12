@@ -20,6 +20,12 @@ Dependencies: NumPy
 
 Implements the closed-form solution for performing linear regression, as well as mini-batch, optimizer-based linear regression. Also shows how **Polynomial Regression** can be implemented as an expansion of linear regression under `linear_regression/examples/polynomial_regression.ipynb`.
 
+### 3. Principal Component Analysis
+
+Dependencies: NumPy
+
+Implements a form of PCA that allows for choosing the dimension to reduce to directly or indirectly. The indirect choice determines the new number of dimensions based on a chosen threshold of explained variance. It is implemented as a utility and thus can be found under `/utils`.
+
 
 ## Planned Additions
 
@@ -33,6 +39,6 @@ The following are considerations for algorithms that may be implemented here. So
 * Support Vector Machines
 * Random Forest
 * K Nearest Neighbors
-* Principal Component Analysis
+* Principal Component Analysis :heavy_check_mark:
 * Fischer Linear Discriminant Analysis
 * RL Algorithms (TBD)
