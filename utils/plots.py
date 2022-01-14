@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.pyplot import cm
 
 def display_prediction_heatmap (model, x_min: float, x_max: float, y_min: float, y_max: float, acc: float) -> None:
     """Displays a heatmap of a binary classification model's predictions in a 2D grid.
@@ -44,18 +45,20 @@ def display_prediction_heatmap (model, x_min: float, x_max: float, y_min: float,
 
 def display_data (data: np.ndarray, labels: np.ndarray) -> None:
     """
-    Creates a plot for 2D binary classification data.
+    Creates a plot for 2D multi-class classification data.
     
     :param data: The input dataset
-    :param labels: The binary labels for the dataset
+    :param labels: The labels for the dataset
     """
     # Reshapes the labels to make for easier comparison
     idx = labels.flatten()
     # Seperate and plot the data according to label
-    zero_data = data[idx == 0,:]
-    plt.scatter(zero_data[:,0], zero_data[:,1], c='blue', label='Class 0')
-    one_data = data[idx == 1,:]
-    plt.scatter(one_data[:,0], one_data[:,1], c='red', label='Class 1')
+    label_count = np.unique(idx).shape[0]
+    split_data = np.array([data[idx == i,:] for i in range(label_count)])
+    # Plots the data
+    color = cm.rainbow(np.linspace(0, 1, label_count))
+    for i,c in zip(range(label_count), color):
+        plt.scatter(split_data[i][:,0], split_data[i][:,1], c=c.reshape(1,-1), label='Class {}'.format(i))
     # Adds some descriptive elements and shows the plot
     plt.legend()
     plt.title('Plotted Data')
