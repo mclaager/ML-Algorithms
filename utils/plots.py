@@ -1,4 +1,5 @@
 import numpy as np
+from mpl_toolkits import mplot3d
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import cm
 
@@ -43,12 +44,15 @@ def display_prediction_heatmap (model, x_min: float, x_max: float, y_min: float,
     plt.show()
     return
 
-def display_data (data: np.ndarray, labels: np.ndarray) -> None:
+def display_data (data: np.ndarray, labels: np.ndarray, title = 'Plotted Data', \
+    legend: bool = True) -> None:
     """
     Creates a plot for 2D multi-class classification data.
     
     :param data: The input dataset
     :param labels: The labels for the dataset
+    :param legend: Whether to show a legend for the data (default: True)
+    :param title: What the title for the plot will be
     """
     # Reshapes the labels to make for easier comparison
     idx = labels.flatten()
@@ -60,9 +64,51 @@ def display_data (data: np.ndarray, labels: np.ndarray) -> None:
     for i,c in zip(range(label_count), color):
         plt.scatter(split_data[i][:,0], split_data[i][:,1], c=c.reshape(1,-1), label='Class {}'.format(i))
     # Adds some descriptive elements and shows the plot
-    plt.legend()
-    plt.title('Plotted Data')
+    if legend:
+        plt.legend()
+    plt.title(title)
     plt.xlabel('$x_1$')
     plt.ylabel('$x_2$')
     plt.show()
     return
+
+def display_data_3d (data: np.ndarray, labels: np.ndarray, title = 'Plotted Data', \
+    legend: bool = True, view_init: tuple = None) -> None:
+    """
+    Creates a plot for 3D multi-class classification data.
+    
+    :param data: The input dataset
+    :param labels: The labels for the dataset
+    :param legend: Whether to show a legend for the data (default: True)
+    :param title: What the title for the plot will be
+    :param view_init: The viewing elevation and azamuth angles in a tuple
+    """
+    # Reshapes the labels to make for easier comparison
+    idx = labels.flatten()
+
+    # Creates the plot
+    fig = plt.figure()
+    ax = plt.axes(projection ='3d')
+
+    # Splits data by class
+    label_count = np.unique(idx).shape[0]
+    split_data = np.array([data[idx == i,:] for i in range(label_count)])
+
+    # Plots the data
+    color = cm.rainbow(np.linspace(0, 1, label_count))
+    for i,c in zip(range(label_count), color):
+        ax.scatter(split_data[i][:,0], split_data[i][:,1], split_data[i][:,2], \
+            c=c.reshape(1,-1), label='Class {}'.format(i))
+    
+    if legend:
+        ax.legend()
+    ax.set_title(title)
+    ax.set_xlabel('$x_1$')
+    ax.set_ylabel('$x_2$')
+    ax.set_zlabel('$x_3$')
+
+    # Changes the viewing angle of the plot
+    if view_init is not None:
+        ax.view_init(view_init[0], view_init[1])
+
+    plt.show()
